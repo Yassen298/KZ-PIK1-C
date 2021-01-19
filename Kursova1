@@ -1,0 +1,345 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+#define N 100  //deklarirame maksimalniq razmer na masiva 100 elementa
+void display(int arr[], int narr); //deklarirame funkciq za izvejdane na masiv
+void bblsort(int x[], int nx); //deklarirame funkciq za sortirane po metoda na mehurcheto
+int max_elem(int arr[], int narr); //deklarirame funkciq za namirane na maximalen element i negoviq index
+void chetni(int arr[], int narr, int* br, int* suma); //deklarirame funkciq za namirane na chetnite
+int chetno_max(int arr[], int narr); //deklarirame funkciq za namirane na maksimalnoto chetno chislo
+int count_chetno_max(int arr[], int narr, int max);  //deklarirame funkciq za namirane broia na maksimalnoto chetno chislo
+int broi_max_chetna_cifra(int arr[], int narr, int max); ////deklarirame funkciq za namirane broia na maksimalnata chetna cifra
+void fileRead(int *input);
+void fileWrite(int *input, int n);
+FILE *writeFile(char *fname);
+
+int main()
+{
+
+	int a[N]; //deklarirame masiv A
+	int b[N]; //deklarirame masiv B
+
+	int na, i;
+
+	int index;
+
+	printf("Vuvedete broi elementi na masiva na =");
+	scanf("%d", &na);  //Zapisvame v promenliva na broia na elementite na masiva, izbran ot potrebitelq
+
+	for (i = 0; i < na; i++)
+	{
+		printf("\nEnter element %d = ", i);
+		scanf("%d", &a[i]);
+	} //obhojdame masiva i potrebitelqt vuvejda otdelnite elementi na masiva A i gi zapisvame v nego
+
+
+	printf("\n Masiv A:");
+	display(a, na); // obryshtenie kum funkciqta za izvejdane na masiv
+
+
+	index = max_elem(a, na);
+
+	printf("\n Max element masiv a = %d, index = %d\n", a[index], index); //izvejdame maximalniq element i negoviq index
+
+	for (i = 0; i < index; i++)
+	{
+		b[i] = a[i];
+	}//kopirame masiva A v masiva B do dostigane na maximalniq element
+
+	printf("\n Masiv B:");
+	display(b, index); //izvejdame masiva B predi da e sortiran s funkciqta display
+
+	printf("\n Sorting array B:");
+	bblsort(b, index); //sortirame masiva b s funkciqta bblsort
+	display(b, index); //izvejdame masiva b sled kato e sortiran
+
+
+	int cifri[10];
+	int save;
+	int broika = 0;
+	for (int i = 0; i < index; i++)
+	{
+		save = b[i];
+		do
+		{
+			cifri[broika] = save % 10;
+			save = save / 10;
+			broika++;
+		} while (save != 0);
+	}//razdrobqvame chislata na cifri i gi zapisvame v nov masiv
+	printf("Masiv s cifrite ot masiv b:");
+	display(cifri, broika);
+
+	bblsort(cifri, broika);
+	display(cifri, broika);
+
+	br_chetni = 0;
+	suma_chetni = 0;
+	chetni(a, na, &br_chetni, &suma_chetni);
+	printf("\n Masiv A: broj_chetni = %d, suma_chetni = %d\n", br_chetni, suma_chetni);
+	//izpolzvaiki funkciqta chetni izvejdame podred chetnite chisla ot masiva a, broq im i sumata im
+
+	chetni(b, index, &br_chetni, &suma_chetni);
+	printf("\n Masiv B: broj_chetni = %d, suma_chetni = %d\n", br_chetni, suma_chetni);
+	//izpolzvaiki funkciqta chetni izvejdame podred chetnite chisla ot masiva a, broq im i sumata im
+	printf("\n");
+
+	chetno_max(b, index);
+	int maximum = chetno_max(b, index);
+	//zapisvame vrushtanoto maksimalno chisloot funkciqta chetno max v nova promenliva, koqto da podadem pri prebroqvaneto
+
+	count_chetno_max(b, index, maximum);//izvejdame broia na maximalnoto chislo
+	printf("\n");
+
+	int maximumcifra = chetno_max(cifri, broika);
+	broi_max_chetna_cifra(cifri, broika, maximumcifra);//izvejdame broia na maximalnata chetna cifra
+
+
+	int mode;
+	const char* menu[4] = { "MENU", //дефинираме масив към тип char за менюто 
+	 "1. Vuvedi nov masiv ",
+	 "2. Obraboti masiva",
+	 "3.  Exit" };
+	do
+	{
+		//system("cls"); // изпълнява командата на ОС „изчистване на екрана”
+		for (i = 0; i < 4; i++) // отпечатва менюто
+			printf("\n%s\n", menu[i]);
+		printf("\n\nMode [1-3]: "); //потребителят избира режим 
+		scanf_s("%d", &mode); //четем избора 
+		switch (mode) //спрямо избора от менюто се случват различни неща
+		{
+		case 1: //ако избере вариант 1, се отпечатва оригиналния масив, който може да обработва
+			printf("Vuvedete broi elementi na masiva na =");
+			scanf("%d", &na);  //Zapisvame v promenliva na broia na elementite na masiva, izbran ot potrebitelq
+
+			for (i = 0; i < na; i++)
+			{
+				printf("\nEnter element %d = ", i);
+				scanf("%d", &a[i]);
+			} //obhojdame masiva i potrebitelqt vuvejda otdelnite elementi na masiva A i gi zapisvame v nego
+
+
+			printf("\n Masiv A:");
+			display(a, na); // obryshtenie kum funkciqta za izvejdane na masiv
+			break;
+		case 2: //ако избере вариант2, може да обраотва сортирания масив от 1
+			for (i = 0; i < index; i++)
+			{
+				b[i] = a[i];
+			}//kopirame masiva A v masiva B do dostigane na maximalniq element
+
+			printf("\n Masiv B:");
+			display(b, index); //izvejdame masiva B predi da e sortiran s funkciqta display
+
+			printf("\n Sorting array B:");
+			bblsort(b, index); //sortirame masiva b s funkciqta bblsort
+			display(b, index); //izvejdame masiva b sled kato e sortiran
+
+			break;
+		case 3: //прекъсва програмата
+			break;
+		default:
+			printf("\nGreshen izbor!\n");
+			system("pause"); // изпълнява командата на ОС „пауза”
+		}
+	} while (mode != 3);
+
+
+	system("pause");
+	return 0;
+}
+
+//funkciq za izvejdane na masiv
+void display(int arr[], int narr) //priema kato vhodqahti danni masiva za izvejdane i do koi element da go izvede
+{
+	int k;
+	for (k = 0; k < narr; k++)
+	{
+		printf("\n Element [%d] = %d", k, arr[k]);
+	}//obhojdame masiva kato printirame elementite mu edin po edin
+	printf("\n");
+}
+
+//sortirane po metoda na mehurchetob BUBBLESORT
+void bblsort(int x[], int nx) //priema kato vhodqahti danni masiva za sortirane i do koi element da go sortira
+{
+	int k, m, temp;
+	for (k = 1; k < nx; k++)
+		for (m = nx - 1; m >= k; m--)
+		{
+			if (x[m - 1] > x[m])  // razmiana na elementi
+			{
+				temp = x[m - 1];
+				x[m - 1] = x[m];
+				x[m] = temp;
+			}
+		}
+}
+
+//funkciq za namirane na maximalen element i negoviq index
+int max_elem(int arr[], int narr)
+{
+	int max, index;
+	int k;
+	max = arr[0];
+	index = 0;
+	for (k = 0; k < narr; k++)
+	{
+		if (arr[k] > max)
+		{
+			max = arr[k];
+			index = k;
+		}
+	}
+	return index;
+	/*obhojdame elementite ot masiva edin po edin kato vseki put ako noviq element e po-golm
+	ot minaliq go zapisvame v max nego i taka se namira pri obhojdane na celiq masiv nai-golemiq
+	element i se zapisva v promenlivata max, v promenlivata index sushto zapisvame i indexa na tozi element */
+}
+
+//funkciq za namirane na chetnite chisla, izvegdaneto im, tehniq broi i tqhnata suma
+void chetni(int arr[], int narr, int* br, int* suma)
+{
+	int k;
+	*br = 0;
+	*suma = 0;
+	for (k = 0; k < narr; k++)
+	{
+		if (arr[k] % 2 == 0) //proverka za chetnost
+		{
+			printf("\nChetno: %d", arr[k]);
+			(*br)++;
+			*suma = *suma + arr[k];
+		}
+	}
+	if (*br == 0)
+		*suma = -1;
+}
+//funkciq za namirane na maksimalnoto chetno chislo
+int chetno_max(int arr[], int narr)
+{
+	int k;
+	int max = 0;
+	for (k = 0; k < narr; k++)
+	{
+		if (arr[k] % 2 == 0 && arr[k] > max)
+		{
+			max = arr[k];
+		}
+		//proverka ednovremenno i za chetnost i za maximalnost
+	}
+	//	printf("\nChetno max: %d", max);
+	//	printf("\n");
+	return max;
+}
+//funkciq za namirane broia na maksimalnoto chetno chislo
+int count_chetno_max(int arr[], int narr, int max)
+{
+	int k;
+	int count = 0;
+	for (k = 0; k < narr; k++)
+	{
+		if (arr[k] == max)
+		{
+			count++;
+		}
+		/*kogato podadem v 3tiq parametur na funkciqta maximalnoto chislo, koeto
+		sme izveli chrez funkciqta chetno_max go prebroiavame i zapisvame broq v promenlivata count */
+	}
+	printf("Broia na maximalnoto chetno chislo %d e: %d", max, count);
+	return count;
+
+}
+
+//funkciq za namirane broia na maksimalnata chetna cifra
+int broi_max_chetna_cifra(int arr[], int narr, int max)
+{
+	int k;
+	int count = 0;
+	for (k = 0; k < narr; k++)
+	{
+		if (arr[k] == max)
+		{
+			count++;
+		}
+	}
+	printf("Broia na maximalnata chetna cifra %d e: %d\n", max, count);
+	return count;
+
+}
+
+//funkciq za chetene ot fail
+void fileRead(int *input)
+{
+	int count = 0;
+	char filename[100] = { 0 };
+	printf("Please enter the name of the file : ");
+	scanf("%s", filename);
+	printf("\n");
+	FILE *fp = fopen(filename, "r");
+	if (!fp)
+	{
+		printf("The file cannot be openned!\n");
+		return;
+	}
+	while (fscanf(fp, "%d", &input[count]) == 1)
+		count++;
+	fclose(fp);
+	printf("Input :", input, count);
+}
+
+//funkciq za zapis vuv fail
+void fileWrite(int *input, int n)
+{
+	char filename[100] = { 0 };
+	printf("Please enter the name of the file : ");
+	scanf("%s", filename);
+	FILE *fp = fopen(filename, "w");
+	if (!fp)
+	{
+		printf("The file cannot be openned!\n");
+		return;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		if ((i + 1) % 3 != 0)
+		{
+			fprintf(fp, "%d ", input[i]);
+		}
+		else
+		{
+			fprintf(fp, "%d\n", input[i]);
+		}
+	}
+	fclose(fp);
+	printf("\nThe file was written successfully :)\n");
+}
+
+FILE *writeFile(char *fname)
+{
+	FILE *fp;
+	int s[15], i;
+
+	fp = fopen(fname, "w");
+	if (!fp)
+		return NULL;
+	printf("Vyvedete 15 celi cisla: \n");
+	fflush(stdin);
+
+	for (i = 0;i < 15;i++)
+	{
+		scanf("%d", &s[i]);
+		if (i % 6 == 0)
+		{
+			fprintf(fp, "\n%d ", s[i]); // na vseki 6 chisla nov red
+		}
+		else
+			fprintf(fp, "%d ", s[i]); // otdelya chislata s interval
+	}
+
+	fclose(fp);
+	return fp;
+}
